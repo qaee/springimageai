@@ -3,6 +3,7 @@ package ca.cs2.aiwebagent.delphi.springimageai.view;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +25,13 @@ public class ChatController {
 
     @PostMapping
     public String chat(@RequestBody String message) {
-        System.out.printf(""+ollamaChatModel);
-        System.out.printf(""+vectorStore);
         return ChatClient.builder(ollamaChatModel)
+                .defaultOptions(ChatOptions.builder()
+                        .model("gemma3:latest")
+                        .build())
                 .build()
                 .prompt("Please answer in German")
+
                 .advisors(new QuestionAnswerAdvisor(vectorStore))
                 .user(message)
                 .call()

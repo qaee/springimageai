@@ -15,14 +15,8 @@ public class DocumentInjestionService {
 
     private static final Logger log = LoggerFactory.getLogger(DocumentInjestionService.class);
 
-    @Value("classpath:/pdf/PM_Absichtserklaerung_OXG_20250429.pdf")
+    @Value("classpath:/pdf/release_notes_delphi-mobile.pdf")
     private Resource resource1;
-    @Value("classpath:/pdf/202505_Pressemitteilung_Ankuendigung_Muenster.pdf")
-    private Resource resource2;
-    @Value("classpath:/pdf/202505_Pressemitteilung_Ankuendigung_Parchim.pdf")
-    private Resource resource3;
-    @Value("classpath:/pdf/202505_Pressemitteilung_Baustart_Zittau.pdf")
-    private Resource resource4;
     private final VectorStore vectorStore;
     public DocumentInjestionService(VectorStore vectorStore) {
         this.vectorStore = vectorStore;
@@ -34,21 +28,6 @@ public class DocumentInjestionService {
         TextSplitter textSplitter = new TokenTextSplitter();
         log.info("Ingesting PDF file");
         vectorStore.accept(textSplitter.split(reader.read()));
-
-        reader = new TikaDocumentReader(resource2);
-        textSplitter = new TokenTextSplitter();
-        log.info("Ingesting PDF file");
-        vectorStore.accept(textSplitter.split(reader.read()));
-        reader = new TikaDocumentReader(resource3);
-        textSplitter = new TokenTextSplitter();
-        log.info("Ingesting PDF file");
-        vectorStore.accept(textSplitter.split(reader.read()));
-        reader = new TikaDocumentReader(resource4);
-        textSplitter = new TokenTextSplitter();
-        log.info("Ingesting PDF file");
-        vectorStore.accept(textSplitter.split(reader.read()));
-
-
 
         log.info("Completed Ingesting PDF file");
         return "Ingested PDF file";
