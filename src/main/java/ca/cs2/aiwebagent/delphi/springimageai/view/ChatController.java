@@ -6,10 +6,13 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -35,6 +38,20 @@ public class ChatController {
                 .advisors(new QuestionAnswerAdvisor(vectorStore))
                 .user(message)
                 .call()
+                .content();
+    }
+    @GetMapping("/stream")
+    public Flux<String> chatWithStream(@RequestParam String message) {
+        return ChatClient.builder(ollamaChatModel)
+                .defaultOptions(ChatOptions.builder()
+                        .model("gemma3:latest")
+                        .build())
+                .build()
+                .prompt("Please answer in German")
+
+                .advisors(new QuestionAnswerAdvisor(vectorStore))
+                .user(message)
+                .stream()
                 .content();
     }
 }
